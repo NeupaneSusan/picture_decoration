@@ -19,14 +19,19 @@ class TitlePage extends StatefulWidget {
 }
 
 class _TitlePageState extends State<TitlePage> {
+  TextStyle textStyle = const TextStyle(
+    fontSize: 30,
+    color: Colors.white,
+  );
   FocusNode focusNode = FocusNode();
   var textColor = colorList[1];
   TextEditingController textEditingController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    if(widget.data!=null){
+    if (widget.data != null) {
       textEditingController.text = widget.data!.title;
+      textStyle = widget.data!.textStyle;
     }
   }
 
@@ -68,12 +73,7 @@ class _TitlePageState extends State<TitlePage> {
                       maxLength: 40,
                       maxLines: 4,
                       textAlign: TextAlign.center,
-                      style: widget.data != null
-                          ? widget.data?.textStyle
-                          : TextStyle(
-                              fontSize: 34,
-                              color: textColor as Color,
-                            ),
+                      style: textStyle,
                       cursorColor: Colors.purple,
                       cursorHeight: 45,
                       focusNode: focusNode,
@@ -97,6 +97,10 @@ class _TitlePageState extends State<TitlePage> {
                             onTap: (() {
                               setState(() {
                                 textColor = e;
+                                textStyle = TextStyle(
+                                    fontSize: 30,
+                                    color: textColor,
+                                    letterSpacing: 1.5);
                               });
                             }),
                             child: Container(
@@ -140,11 +144,16 @@ class _TitlePageState extends State<TitlePage> {
   }
 
   setTextStyle() {
+    final imageProcessProvider =
+        Provider.of<TextProcess>(context, listen: false);
+    if (widget.data != null) {
+      imageProcessProvider.updateText(
+          widget.data!, textStyle, textEditingController.text);
+      return;
+    }
     final top = MediaQuery.of(context).size.height / 3.2;
     final left = MediaQuery.of(context).size.width / 2.1;
 
-    final imageProcessProvider =
-        Provider.of<TextProcess>(context, listen: false);
     imageProcessProvider.setText(
         title: textEditingController.text,
         textStyle: TextStyle(

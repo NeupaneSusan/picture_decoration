@@ -4,6 +4,7 @@ import 'package:picture_decoration/alert_page.dart';
 import 'package:picture_decoration/model/touch_pont.dart';
 import 'package:picture_decoration/view/title_page.dart';
 import 'package:picture_decoration/viewmodel/brush_viewmodel.dart';
+
 import 'package:picture_decoration/viewmodel/menu_viewmodel.dart';
 
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class TextWidget extends StatelessWidget {
             return;
           }
           setTextToMove(context, index);
-          final provider = Provider.of<MenuController>(context, listen: false);
+          final provider = Provider.of<MenusController>(context, listen: false);
           provider.indexMenu = 5;
         },
         onDoubleTap: () {
@@ -49,7 +50,7 @@ class TextWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Stack(
-              clipBehavior: Clip.antiAlias,
+              clipBehavior: Clip.none,
               children: [
                 if (selectedIndex == index) ...[
                   Container(
@@ -68,7 +69,11 @@ class TextWidget extends StatelessWidget {
                   ),
                   const Positioned(
                     left: -10,
-                    child: Icon(CupertinoIcons.multiply_circle_fill),
+                    top: -10,
+                    child: Icon(
+                      CupertinoIcons.multiply_circle_fill,
+                      color: Colors.white,
+                    ),
                   ),
                 ] else ...[
                   Padding(
@@ -118,14 +123,29 @@ void setTextToMove(BuildContext context, int index) {
   provider.selectedText(index: index);
 }
 
-void draw(BuildContext context, Offset offset) {
+void draw(
+    BuildContext context, Offset offset, double strokeWidth, Color colors) {
   final drawController = Provider.of<BrushController>(context, listen: false);
+
   TouchPoints p = TouchPoints(
       points: offset,
       paint: Paint()
-        ..color = Colors.red
-        ..strokeWidth = 4
+        ..color = colors
+        ..strokeWidth = strokeWidth
         ..strokeCap = StrokeCap.round
         ..isAntiAlias = true);
   drawController.setTouchPoint(p);
+}
+
+void eraser(BuildContext context, Offset offset, double strokeWidth) {
+  final eraseController = Provider.of<BrushController>(context, listen: false);
+  TouchPoints p = TouchPoints(
+      points: offset,
+      paint: Paint()
+        ..blendMode = BlendMode.clear
+        ..isAntiAlias = true
+        ..color = Colors.transparent
+        ..strokeWidth = strokeWidth);
+
+  eraseController.setEraseTouchPoint(p);
 }

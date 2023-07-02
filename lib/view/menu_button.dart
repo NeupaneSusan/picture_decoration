@@ -4,7 +4,7 @@ import 'package:picture_decoration/viewmodel/process_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class MenuBotton extends StatelessWidget {
-  final MenuController notifyListeners;
+  final MenusController notifyListeners;
   final int index;
   final IconData iconData;
   final String lebel;
@@ -29,7 +29,8 @@ class MenuBotton extends StatelessWidget {
         highlightColor: Colors.transparent,
         onTap: (() {
           if (index != 5) {
-            final textProcess = Provider.of<TextProcess>(context,listen:false);
+            final textProcess =
+                Provider.of<TextProcess>(context, listen: false);
             textProcess.selectedText(index: -1);
           }
           onTap();

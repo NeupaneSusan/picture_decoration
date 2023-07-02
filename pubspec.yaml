@@ -11,9 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   provider:
   cupertino_icons: ^1.0.2
+  file_picker: ^5.3.2
   
 
 dev_dependencies:

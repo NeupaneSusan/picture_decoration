@@ -15,10 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-       ChangeNotifierProvider(
-          create: (context) => MenuController(),
+        ChangeNotifierProvider(
+          create: (context) => MenusController(),
         ),
-        ChangeNotifierProvider(create: (context)=> BrushController()),
+        ChangeNotifierProvider(create: (context) => BrushController()),
         ChangeNotifierProvider(
           create: (context) => TextProcess(),
         )
@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          useMaterial3: true,
         ),
         home: const MyHomePage(),
       ),

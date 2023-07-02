@@ -56,6 +56,18 @@ class TextProcess with ChangeNotifier {
     notifyListeners();
   }
 
+  void updateText(KfontStyleModel style, TextStyle textStyle, String title) {
+    int index = textList.indexWhere((element) => element == style);
+    if (title.isNotEmpty) {
+      textList[index].textStyle = textStyle;
+      textList[index].title = title;
+    } else {
+      textList.removeAt(index);
+    }
+
+    notifyListeners();
+  }
+
   List<KfontStyleModel> get textList => _textList;
   int get selectedTextIndex => _selectedTextIndex;
 }

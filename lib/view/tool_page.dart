@@ -5,14 +5,16 @@ import 'package:picture_decoration/view/menu_button.dart';
 import 'package:picture_decoration/view/title_page.dart';
 import 'package:picture_decoration/viewmodel/brush_viewmodel.dart';
 import 'package:picture_decoration/viewmodel/menu_viewmodel.dart';
-import 'package:picture_decoration/widget/testing.dart';
+
 import 'package:provider/provider.dart';
 
 import '../alert_page.dart';
 
 class Tools extends StatefulWidget {
+  final ValueNotifier<Color> colorValueNotifier;
   const Tools({
     Key? key,
+    required this.colorValueNotifier,
   }) : super(key: key);
 
   @override
@@ -21,7 +23,7 @@ class Tools extends StatefulWidget {
 
 class _ToolsState extends State<Tools> {
   double _value = 0;
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,32 +42,54 @@ class _ToolsState extends State<Tools> {
               inactiveColor: Colors.purpleAccent,
               value: _value,
               onChanged: (value) {
+                final brushController =
+                    Provider.of<BrushController>(context, listen: false);
+                if (value >= 4) {
+                  brushController.widthStockValue = value;
+                }
+                if (value <= 4 && brushController.widthStock >= 4) {
+                  brushController.widthStock = 4.0;
+                }
                 setState(() {
                   _value = value;
                 });
               },
             ),
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: colorList
-                    .map((e) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.5, color: e),
-                                boxShadow: kElevationToShadow[2],
-                                color: e,
-                                borderRadius: BorderRadius.circular(50),
-                              )),
-                        ))
-                    .toList()),
+            ValueListenableBuilder(
+                valueListenable: widget.colorValueNotifier,
+                builder: (context, color, child) {
+                  return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: colorList
+                          .map((e) => InkWell(
+                                onTap: () {
+                                  widget.colorValueNotifier.value = e;
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        border:
+                                            Border.all(width: 0.5, color: e),
+                                        boxShadow:
+                                            widget.colorValueNotifier.value == e
+                                                ? kElevationToShadow[24]
+                                                : kElevationToShadow[2],
+                                        color: e,
+                                        borderRadius: BorderRadius.circular(50),
+                                      )),
+                                ),
+                              ))
+                          .toList());
+                }),
             const Spacer(),
             FittedBox(
               fit: BoxFit.cover,
-              child: Consumer<MenuController>(builder: (context, data, child) {
+              child: Consumer<MenusController>(builder: (context, data, child) {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,38 +100,35 @@ class _ToolsState extends State<Tools> {
                       iconData: Icons.undo,
                       lebel: 'Undo',
                       onTap: () {
-                       Provider.of<BrushController>(context,listen: false).undo();
+                        Provider.of<BrushController>(context, listen: false)
+                            .undo();
                       },
                     ),
-                    MenuBotton(
-                      notifyListeners: data,
-                      index: 1,
-                      iconData: Icons.cut,
-                      lebel: 'Magic Cut',
-                      onTap: () {
-                        
-                      },
-                    ),
-                    MenuBotton(
-                      notifyListeners: data,
-                      index: 2,
-                      iconData: Icons.directions,
-                      lebel: 'Move',
-                      onTap: () {
+                    // MenuBotton(
+                    //   notifyListeners: data,
+                    //   index: 1,
+                    //   iconData: Icons.cut,
+                    //   lebel: 'Magic Cut',
+                    //   onTap: () {},
+                    // ),
+                    // MenuBotton(
+                    //   notifyListeners: data,
+                    //   index: 2,
+                    //   iconData: Icons.directions,
+                    //   lebel: 'Move',
+                    //   onTap: () {
 
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (context) => Testing()));
-                      },
-                    ),
-                    MenuBotton(
-                      notifyListeners: data,
-                      index: 3,
-                      iconData: Icons.directions,
-                      lebel: 'Eraser',
-                      onTap: () {
-                        data.indexMenu =3;
-                      },
-                    ),
+                    //   },
+                    // ),
+                    // MenuBotton(
+                    //   notifyListeners: data,
+                    //   index: 3,
+                    //   iconData: Icons.directions,
+                    //   lebel: 'Eraser',
+                    //   onTap: () {
+                    //     data.indexMenu = 3;
+                    //   },
+                    // ),
                     MenuBotton(
                       notifyListeners: data,
                       index: 4,

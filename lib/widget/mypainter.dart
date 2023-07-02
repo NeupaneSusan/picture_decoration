@@ -21,7 +21,6 @@ class MyPainter extends CustomPainter {
         offsetPoints.add(pointsList[i]!.points);
         offsetPoints.add(Offset(
             pointsList[i]!.points.dx + 0.1, pointsList[i]!.points.dy + 0.1));
-
         canvas.drawPoints(PointMode.points, offsetPoints, pointsList[i]!.paint);
       }
     }
