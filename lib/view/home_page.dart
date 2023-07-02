@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/rendering.dart';
+
 import 'package:picture_decoration/color.dart';
 
 import 'package:picture_decoration/view/tool_page.dart';
@@ -26,26 +27,42 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  XTypeGroup typeGroup = const XTypeGroup(
+    label: 'images',
+    extensions: <String>['jpg', 'png'],
+  );
   ValueNotifier<String?> valueNotifierImage = ValueNotifier(null);
 
   ValueNotifier<Color> colorSelectedValueNotifier = ValueNotifier(colorList[3]);
   Future<void> _capturePng() async {
     RenderRepaintBoundary boundary =
         globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final FileSaveLocation? result =
+        await getSaveLocation(suggestedName: "image.png");
+
     ui.Image image = await boundary.toImage(pixelRatio: 10);
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData!.buffer.asUint8List();
-    final file = File('/storage/emulated/0/Download/test1.png');
-    await file.writeAsBytes(pngBytes);
+    if (result != null) {
+      final file = File(result.path);
+      await file.writeAsBytes(pngBytes);
+    }
   }
 
   _uploadImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'],
-    );
-    if (result != null) {
-      valueNotifierImage.value = (result.files[0].path);
+    // FilePickerResult? result = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['jpg', 'jpeg', 'png'],
+    // );
+    print('hello');
+    try {
+      final XFile? file =
+          await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+      if (file != null) {
+        valueNotifierImage.value = (file.path);
+      }
+    } catch (err) {
+      print(err);
     }
   }
 
